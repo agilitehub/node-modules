@@ -1,0 +1,41 @@
+{
+  "name": "jde-date-time",
+  "license": "MIT",
+  "version": "0.0.7",
+  "description": "A NodeJS and JavaScript Library to manage conversions of JDE Dates/Times to JS Dates/Times and vice versa",
+  "homepage": "https://agilite.io",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agilitehub/node-modules/jde-date-time"
+  },
+  "bugs": {
+    "url": "https://github.com/agilitehub/node-modules/issues",
+    "email": "support@agilite.io"
+  },
+  "author": "Agilit-e",
+  "contributors": [
+    {
+      "name": "Armand Smit",
+      "email": "support@agilite.io",
+      "url": "https://agilite.io"
+    }
+  ],
+  "keywords": [
+    "jde",
+    "agilite",
+    "dates",
+    "times",
+    "jd edwards"
+  ],
+  "main": "jde-date-time.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "engines": {
+    "node": "8.9.1"
+  },
+  "dependencies": {
+    "mocha": "5.1.1",
+    "chai": "4.1.2"
+  }
+}
