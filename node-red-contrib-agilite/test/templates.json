@@ -1,0 +1,113 @@
+[
+    {
+        "id": "615d099c.ad35c8",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Templates test case flow",
+        "info": "",
+        "x": 150,
+        "y": 1540,
+        "wires": []
+    },
+    {
+        "id": "ad1b89e4.b2c7a8",
+        "type": "inject",
+        "z": "fd67429b.e294",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 120,
+        "y": 1580,
+        "wires": [
+            [
+                "bcffc0d.5072a4"
+            ]
+        ]
+    },
+    {
+        "id": "a0fa5267.709e7",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Execute",
+        "info": "",
+        "x": 160,
+        "y": 1660,
+        "wires": []
+    },
+    {
+        "id": "bcffc0d.5072a4",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "var key = null;\n\n// Set Key\nflow.set(\"datamappings.key\", \"node-red-testing\");\nkey = flow.get(\"datamappings.key\");\n\n// Test if key is null\nif(key !== null){\n    node.warn(\"key is not equal to null\");\n}else{\n    node.error(\"key is equal to null\");\n}\n\nmsg.key = key;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 1620,
+        "wires": [
+            [
+                "160a604d.12bef"
+            ]
+        ]
+    },
+    {
+        "id": "61bb5595.bba16c",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 330,
+        "y": 1700,
+        "wires": [
+            [
+                "9a6917e0.a0ad98"
+            ]
+        ]
+    },
+    {
+        "id": "9a6917e0.a0ad98",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"string\"){\n    node.warn(\"Response is a string\");\n}else{\n    node.error(\"Response is not a string\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 1700,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "160a604d.12bef",
+        "type": "templates",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "profileKey": "{{key}}",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 170,
+        "y": 1700,
+        "wires": [
+            [
+                "61bb5595.bba16c"
+            ]
+        ]
+    },
+    {
+        "id": "45c15c14.758434",
+        "type": "agilite-login",
+        "z": "",
+        "serverType": "2",
+        "server": "http://localhost:6010",
+        "name": "Agilit-e Local"
+    }
+]

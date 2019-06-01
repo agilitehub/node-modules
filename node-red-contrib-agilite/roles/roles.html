@@ -1,0 +1,186 @@
+<script type="text/javascript">
+  var agiliteRolesFunctions = {
+    updateActionType:function(){
+        var value = $("#node-input-actionType option:selected").val();
+
+        switch(value){
+          case "3"://Get Role
+            document.querySelector("#rowRoleName").style.display = "block";
+            document.querySelector("#rowConditionalLevels").style.display = "block";
+            document.querySelector("#rowProcessKey").style.display = "none";
+            document.querySelector("#rowBPMRecordId").style.display = "none";
+            document.querySelector("#rowCurrentUser").style.display = "none";
+            document.querySelector("#rowResponsibleUsers").style.display = "none";
+            break;
+          case "2"://Get Assigned Roles
+            document.querySelector("#rowRoleName").style.display = "block";
+            document.querySelector("#rowConditionalLevels").style.display = "none";
+            document.querySelector("#rowProcessKey").style.display = "block";
+            document.querySelector("#rowBPMRecordId").style.display = "block";
+            document.querySelector("#rowCurrentUser").style.display = "none";
+            document.querySelector("#rowResponsibleUsers").style.display = "none";
+            break;
+          case "1"://Assign Role
+            document.querySelector("#rowRoleName").style.display = "block";
+            document.querySelector("#rowConditionalLevels").style.display = "none";
+            document.querySelector("#rowProcessKey").style.display = "block";
+            document.querySelector("#rowBPMRecordId").style.display = "block";
+            document.querySelector("#rowCurrentUser").style.display = "block";
+            document.querySelector("#rowResponsibleUsers").style.display = "block";
+            break;
+          default:
+            document.querySelector("#rowRoleName").style.display = "none";
+            document.querySelector("#rowConditionalLevels").style.display = "none";
+            document.querySelector("#rowProcessKey").style.display = "none";
+            document.querySelector("#rowBPMRecordId").style.display = "none";
+            document.querySelector("#rowCurrentUser").style.display = "none";
+            document.querySelector("#rowResponsibleUsers").style.display = "none";
+            break;
+        }
+    }
+  }
+
+  RED.nodes.registerType('roles',{
+    category: "agilite",
+    inputs: 1,
+    outputs:1,
+    icon: "roles.png",
+    color: "#ffa4a2",
+    label: function() {
+        return this.name || "Roles";
+    },
+    paletteLabel : "roles",
+    defaults : {
+      server: {
+        value : "",
+        required: true,
+        type: "agilite-login"
+      },
+      actionType: {
+        value : "",
+        required : true
+      },
+      roleName: {
+        value : ""
+      },
+      conditionalLevels: {
+        value : ""
+      },
+      processKey: {
+        value : ""
+      },
+      bpmRecordId: {
+        value : ""
+      },
+      currentUser: {
+        value : ""
+      },
+      responsibleUsers: {
+        value:""
+      },
+      name: {
+        value:""
+      },
+      field: {
+        value: "payload",
+      },
+      fieldType: {
+        value: "msg"
+      },
+      failFlow: {
+        value: true
+      }
+    },
+    oneditprepare: function(){
+      $("#node-input-actionType").change(function(){agiliteRolesFunctions.updateActionType()});
+      agiliteRolesFunctions.updateActionType();
+            if (!this.fieldType)
+              this.fieldType = 'msg';
+            
+            $("#node-input-field").typedInput({
+                default: 'msg',
+                types: ['msg','flow','global'],
+                typeField: $("#node-input-fieldType")
+            });
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="roles">
+  <div class="form-row">
+    <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+    <input type="text" id="node-input-server" placeholder="Server"></input>
+  </div>
+  <div class="form-row" id="rowActionType">
+      <label for="node-input-actionType"><i class="fa fa-arrow-circle-right"></i> Action Type</label>
+      <select id="node-input-actionType" style="width:auto;">
+        <option value="1">Assign Role</option>
+        <option value="2">Get Assigned Roles</option>
+        <option value="3">Get Role</option>
+      </select>
+  </div>
+  <div class="form-row" id="rowRoleName">
+    <label for="node-input-roleName"><i class="fa fa-key"></i> Role Name {{m}}</label>
+    <input type="text" id="node-input-roleName" />
+  </div>
+  <div class="form-row" id="rowConditionalLevels">
+    <label for="node-input-conditionalLevels"><i class="fa fa-key"></i> Conditional Levels {{m}}</label>
+    <input type="text" id="node-input-conditionalLevels" />
+  </div>
+  <div class="form-row" id="rowProcessKey">
+    <label for="node-input-processKey"><i class="fa fa-object-group"></i> Process Key {{m}}</label>
+    <input type="text" id="node-input-processKey" />
+  </div>
+  <div class="form-row" id="rowBPMRecordId">
+    <label for="node-input-bpmRecordId"><i class="fa fa-leaf"></i> BPM Record Id {{m}}</label>
+    <input type="text" id="node-input-bpmRecordId" />
+  </div>
+  <div class="form-row" id="rowCurrentUser">
+    <label for="node-input-currentUser"><i class="fa fa-edit"></i> Current User {{m}}</label>
+    <input type="text" id="node-input-currentUser" />
+  </div>
+  <div class="form-row" id="rowResponsibleUsers">
+    <label for="node-input-responsibleUsers"><i class="fa fa-key"></i> Responsible Users {{m}</label>
+    <input type="text" id="node-input-responsibleUsers" />
+  </div>
+  <div class="form-row">
+        <label for="node-input-field"><i class="fa fa-edit"></i> <span data-i18n="template.label.property">Output to</span></label>
+        <input type="text" id="node-input-field" placeholder="payload" style="width:250px;">
+        <input type="hidden" id="node-input-fieldType">
+  </div>
+  <div class="form-row">
+    <label for="node-input-failFlow"><i class="fa fa-exclamation-triangle"></i> <span data-i18n="template.label.property">Fail Flow on Error</span></label>
+    <input type="checkbox" id="node-input-failFlow" style="width:initial;" /> Yes
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Node Name" />
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="roles">
+  <h4>Description</h4>
+  <p>A node to fetch and action Agilit-e Roles based on various conditions</p>
+  <p> Fields where the label includes {{m}} are mustache-enabled fields relative to the msg object </p>
+
+  <h4>Input</h4>
+  <p>The following properties can either be manually specified in the UI Form of this node or via Mustache, or passed programmatically via <code>msg.agilite.roles</code>:
+    <ul>
+        <li><code>msg.agilite.roles.roleName</code>: String</li>
+        <li><code>msg.agilite.roles.conditionalLevels</code>: String</li>
+        <li><code>msg.agilite.roles.processKey</code>: String</li>
+        <li><code>msg.agilite.roles.bpmRecordId</code>: String</li>
+        <li><code>msg.agilite.roles.currentUser</code>: String</li>
+        <li><code>msg.agilite.roles.responsibleUsers</code>: String</li>
+    </ul>
+  </p>
+
+  <h4>Output</h4>
+  <p>The output of this node will deliver either an Object or an Array</p>
+  <p>Additional information about the API result can be found in the following <code>msg.agilite</code> attributes:
+    <ul>
+        <li><code>msg.agilite.success</code>: Boolean</li>
+        <li><code>msg.agilite.messages</code>: Array (List of error messages if success = false)</li>
+    </ul>
+  </p>
+</script>

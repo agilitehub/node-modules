@@ -1,0 +1,131 @@
+<script type="text/javascript">
+  var agiliteFilesFunctions = {
+    updateActionType:function(){
+        var value = $("#node-input-actionType option:selected").val();
+
+        switch(value){
+          case "1"://Get File
+            document.querySelector("#rowResponseType").style.display = "block";
+            break;
+          default:
+            document.querySelector("#rowResponseType").style.display = "none";
+            break;
+        }
+    }
+  }
+
+  RED.nodes.registerType('files',{
+    category: "agilite",
+    inputs: 1,
+    outputs:1,
+    icon: "files.png",
+    color: "#ffa4a2",
+    label: function() {
+        return this.name||"Files";
+    },
+    paletteLabel : "files",
+    defaults : {
+      server: {
+        value : "",
+        required: true,
+        type: "agilite-login"
+      },
+      actionType: {
+        value : "",
+        required : true
+      },
+      responseType: {
+        value : "arraybuffer"
+      },
+      recordId: {
+        value : ""
+      },
+      name: {
+        value:""
+      },
+      field: {
+        value: "payload",
+      },
+      fieldType: {
+        value: "msg"
+      },
+      failFlow: {
+        value: true
+      }
+    },
+    oneditprepare: function() {
+      $("#node-input-actionType").change(function(){agiliteFilesFunctions.updateActionType()});
+      agiliteFilesFunctions.updateActionType();
+
+      if (!this.fieldType)
+        this.fieldType = 'msg';
+      
+      $("#node-input-field").typedInput({
+          default: 'msg',
+          types: ['msg','flow','global'],
+          typeField: $("#node-input-fieldType")
+      });
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="files">
+  <div class="form-row">
+    <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+    <input type="text" id="node-input-server" placeholder="Server"></input>
+  </div>
+  <div class="form-row" id="rowActionType">
+      <label for="node-input-actionType"><i class="fa fa-arrow-circle-right"></i> Action Type</label>
+      <select id="node-input-actionType">
+        <option value="1">Get File</option>
+        <option value="2">Get File Name</option>
+        <option value="3">Delete File</option>
+      </select>
+  </div>  
+  <div class="form-row">
+    <label for="node-input-recordId"><i class="fa fa-key"></i> Record Id {{m}}</label>
+    <input type="text" id="node-input-recordId" />
+  </div>
+  <div class="form-row" id="rowResponseType">
+    <label for="node-input-responseType"><i class="fa fa-arrow-circle-right"></i> Response Type</label>
+    <select id="node-input-responseType">
+      <option value="arraybuffer">Array Buffer</option>
+      <option value="blob">Blob</option>
+      <option value="document">Document</option>
+      <option value="json">JSON</option>
+      <option value="text">Text</option>
+      <option value="stream">Stream</option>
+    </select>
+</div>  
+  <div class="form-row">
+    <label for="node-input-field"><i class="fa fa-edit"></i> <span data-i18n="template.label.property">Output to</span></label>
+    <input type="text" id="node-input-field" placeholder="payload" style="width:250px;">
+    <input type="hidden" id="node-input-fieldType">
+  </div>
+  <div class="form-row">
+    <label for="node-input-failFlow"><i class="fa fa-exclamation-triangle"></i> <span data-i18n="template.label.property">Fail Flow on Error</span></label>
+    <input type="checkbox" id="node-input-failFlow" style="width:initial;" /> Yes
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Node Name" />
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="files">
+<h4>Description</h4>
+<p>A node to have Agilit-e process File transactions based on the Action Type selected</p>
+<p> Fields where the label includes {{m}} are mustache-enabled fields relative to the msg object </p>
+
+<h4>Input</h4>
+<p>The file Record Id can either be manually specified in the UI Form of this node or via Mustache, or passed programmatically via <code>msg.agilite.files.recordId</code></p>
+
+<h4>Ouput</h4>
+<p>The output of this node will deliver either a string value, an Object or an ArrayBuffer to <code>msg.payload</code></p>
+<p>Additional information about the API result can be found in the following <code>msg.agilite</code> attributes:
+  <ul>
+      <li><code>msg.agilite.success</code>: Boolean</li>
+      <li><code>msg.agilite.messages</code>: Array (List of error messages if success = false)</li>
+  </ul>
+</p>
+</script>

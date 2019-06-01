@@ -1,0 +1,301 @@
+<script type="text/javascript">
+  var agiliteBpmFunctions = {
+    updateActionType:function(){
+        var value = $("#node-input-actionType option:selected").val();
+
+        switch(value){
+          case "1"://Register BPM Record
+            document.querySelector("#rowProfileKey").style.display = "block";
+            document.querySelector("#rowCurrentUser").style.display = "block";
+            document.querySelector("#rowBpmRecordId").style.display = "none";
+            document.querySelector("#rowOptionSelected").style.display = "none";
+            document.querySelector("#rowBpmRecordIds").style.display = "none";
+            document.querySelector("#rowResponsibleUsers").style.display = "none";
+            document.querySelector("#rowStepNames").style.display = "none";
+            document.querySelector("#rowRelevantUsers").style.display = "none";
+            document.querySelector("#rowExcludeHistory").style.display = "none";
+            document.querySelector("#rowExcludeStepOptions").style.display = "none";
+            document.querySelector("#rowExcludeVisibleObjects").style.display = "none";
+            document.querySelector("#rowProfileKeys").style.display = "none";
+            break;
+          case "2"://Execute
+            document.querySelector("#rowProfileKey").style.display = "block";
+            document.querySelector("#rowCurrentUser").style.display = "block";
+            document.querySelector("#rowBpmRecordId").style.display = "block";
+            document.querySelector("#rowOptionSelected").style.display = "block";
+            document.querySelector("#rowBpmRecordIds").style.display = "none";
+            document.querySelector("#rowResponsibleUsers").style.display = "none";
+            document.querySelector("#rowStepNames").style.display = "none";
+            document.querySelector("#rowRelevantUsers").style.display = "none";
+            document.querySelector("#rowExcludeHistory").style.display = "none";
+            document.querySelector("#rowExcludeStepOptions").style.display = "none";
+            document.querySelector("#rowExcludeVisibleObjects").style.display = "none";
+            document.querySelector("#rowProfileKeys").style.display = "none";
+            break;
+          case "3"://Get Record State
+            document.querySelector("#rowProfileKey").style.display = "none";
+            document.querySelector("#rowCurrentUser").style.display = "none";
+            document.querySelector("#rowBpmRecordId").style.display = "none";
+            document.querySelector("#rowOptionSelected").style.display = "none";
+            document.querySelector("#rowBpmRecordIds").style.display = "block";
+            document.querySelector("#rowResponsibleUsers").style.display = "block";
+            document.querySelector("#rowStepNames").style.display = "block";
+            document.querySelector("#rowRelevantUsers").style.display = "block";
+            document.querySelector("#rowExcludeHistory").style.display = "block";
+            document.querySelector("#rowExcludeStepOptions").style.display = "block";
+            document.querySelector("#rowExcludeVisibleObjects").style.display = "block";
+            document.querySelector("#rowProfileKeys").style.display = "block"; 
+            break;
+          case "4"://Get By Profile Key
+            document.querySelector("#rowProfileKey").style.display = "block";
+            document.querySelector("#rowCurrentUser").style.display = "none";
+            document.querySelector("#rowBpmRecordId").style.display = "none";
+            document.querySelector("#rowOptionSelected").style.display = "none";
+            document.querySelector("#rowBpmRecordIds").style.display = "none";
+            document.querySelector("#rowResponsibleUsers").style.display = "none";
+            document.querySelector("#rowStepNames").style.display = "none";
+            document.querySelector("#rowRelevantUsers").style.display = "none";
+            document.querySelector("#rowExcludeHistory").style.display = "none";
+            document.querySelector("#rowExcludeStepOptions").style.display = "none";
+            document.querySelector("#rowExcludeVisibleObjects").style.display = "none";
+            document.querySelector("#rowProfileKeys").style.display = "none";
+            break;
+          case "5"://Get Active Steps
+            document.querySelector("#rowProfileKey").style.display = "block";
+            document.querySelector("#rowCurrentUser").style.display = "none";
+            document.querySelector("#rowBpmRecordId").style.display = "none";
+            document.querySelector("#rowOptionSelected").style.display = "none";
+            document.querySelector("#rowBpmRecordIds").style.display = "none";
+            document.querySelector("#rowResponsibleUsers").style.display = "none";
+            document.querySelector("#rowStepNames").style.display = "none";
+            document.querySelector("#rowRelevantUsers").style.display = "none";
+            document.querySelector("#rowExcludeHistory").style.display = "none";
+            document.querySelector("#rowExcludeStepOptions").style.display = "none";
+            document.querySelector("#rowExcludeVisibleObjects").style.display = "none";
+            document.querySelector("#rowProfileKeys").style.display = "none";
+            break;
+          case "6"://Get Active Users
+            document.querySelector("#rowProfileKey").style.display = "block";
+            document.querySelector("#rowCurrentUser").style.display = "none";
+            document.querySelector("#rowBpmRecordId").style.display = "none";
+            document.querySelector("#rowOptionSelected").style.display = "none";
+            document.querySelector("#rowBpmRecordIds").style.display = "none";
+            document.querySelector("#rowResponsibleUsers").style.display = "none";
+            document.querySelector("#rowStepNames").style.display = "none";
+            document.querySelector("#rowRelevantUsers").style.display = "none";
+            document.querySelector("#rowExcludeHistory").style.display = "none";
+            document.querySelector("#rowExcludeStepOptions").style.display = "none";
+            document.querySelector("#rowExcludeVisibleObjects").style.display = "none";
+            document.querySelector("#rowProfileKeys").style.display = "none";
+          break;
+          default:
+            document.querySelector("#rowProfileKey").style.display = "none";
+            document.querySelector("#rowCurrentUser").style.display = "none";
+            document.querySelector("#rowBpmRecordId").style.display = "none";
+            document.querySelector("#rowOptionSelected").style.display = "none";
+            document.querySelector("#rowBpmRecordIds").style.display = "none";
+            document.querySelector("#rowResponsibleUsers").style.display = "none";
+            document.querySelector("#rowStepNames").style.display = "none";
+            document.querySelector("#rowRelevantUsers").style.display = "none";
+            document.querySelector("#rowExcludeHistory").style.display = "none";
+            document.querySelector("#rowExcludeStepOptions").style.display = "none";
+            document.querySelector("#rowExcludeVisibleObjects").style.display = "none";
+            document.querySelector("#rowProfileKeys").style.display = "none";
+            break;
+        }
+    }
+  }
+
+  RED.nodes.registerType('bpm',{
+    category: "agilite",
+    inputs: 1,
+    outputs:1,
+    icon: "bpm.png",
+    color: "#ffa4a2",
+    label: function() {
+        return this.name || "BPM";
+    },
+    paletteLabel : "bpm",
+    defaults : {
+      server: {
+        value : "",
+        required: true,
+        type: "agilite-login"
+      },
+      actionType: {
+        value : "",
+        required : true
+      },
+      profileKey: {
+        value : ""
+      },
+      currentUser: {
+        value : ""
+      },
+      bpmRecordId: {
+        value : ""
+      },
+      optionSelected: {
+        value : ""
+      },
+      bpmRecordIds: {
+        value : ""
+      },
+      responsibleUsers: {
+        value : ""
+      },
+      stepNames: {
+        value:""
+      },
+      relevantUsers: {
+        value:""
+      },
+      excludeHistory: {
+        value: true
+      },
+      excludeStepOptions: {
+        value: true
+      },
+      excludeVisibleObjects: {
+        value: true
+      },
+      profileKeys: {
+        value:""
+      },
+      name: {
+        value:""
+      },
+      field: {
+        value: "payload",
+      },
+      fieldType: {
+        value: "msg"
+      },
+      failFlow: {
+        value: true
+      }
+    },
+    oneditprepare: function(){
+      $("#node-input-actionType").change(function(){agiliteBpmFunctions.updateActionType()});
+      agiliteBpmFunctions.updateActionType();
+
+      if (!this.fieldType)
+        this.fieldType = 'msg';
+
+      $("#node-input-field").typedInput({
+          default: 'msg',
+          types: ['msg','flow','global'],
+          typeField: $("#node-input-fieldType")
+      });
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="bpm">
+  <div class="form-row">
+    <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+    <input type="text" id="node-input-server" placeholder="Server"></input>
+  </div>
+  <div class="form-row" id="rowActionType">
+      <label for="node-input-actionType"><i class="fa fa-arrow-circle-right"></i> Action Type</label>
+      <select id="node-input-actionType" style="width:auto;">
+        <option value="1">Register BPM Record</option>
+        <option value="2">Execute</option>
+        <option value="3">Get Record State</option>
+        <option value="4">Get By Profile Key</option>
+        <option value="5">Get Active Steps</option>
+        <option value="6">Get Active Users</option>
+      </select>
+  </div>
+  <div class="form-row" id="rowProfileKey">
+    <label for="node-input-profileKey"><i class="fa fa-key"></i> Profile Key {{m}}</label>
+    <input type="text" id="node-input-profileKey" />
+  </div>
+  <div class="form-row" id="rowCurrentUser">
+    <label for="node-input-currentUser"><i class="fa fa-user"></i> Current User {{m}}</label>
+    <input type="text" id="node-input-currentUser" />
+  </div>
+  <div class="form-row" id="rowBpmRecordId">
+    <label for="node-input-bpmRecordId"><i class="fa fa-edit"></i> BPM Record Id {{m}}</label>
+    <input type="text" id="node-input-bpmRecordId" />
+  </div>
+  <div class="form-row" id="rowOptionSelected">
+    <label for="node-input-optionSelected">Option Selected {{m}}</label>
+    <input type="text" id="node-input-optionSelected" />
+  </div>
+  <div class="form-row" id="rowBpmRecordIds">
+    <label for="node-input-bpmRecordIds"><i class="fa fa-edit"></i> BPM Record Ids {{m}}</label>
+    <input type="text" id="node-input-bpmRecordIds" />
+  </div>
+  <div class="form-row" id="rowResponsibleUsers">
+    <label for="node-input-responsibleUsers"><i class="fa fa-user"></i> Responsible Users {{m}}</label>
+    <input type="text" id="node-input-responsibleUsers" />
+  </div>
+  <div class="form-row" id="rowStepNames">
+    <label for="node-input-stepNames"><i class="fa fa-edit"></i> Step Names {{m}}</label>
+    <input type="text" id="node-input-stepNames" />
+  </div>
+  <div class="form-row" id="rowRelevantUsers">
+    <label for="node-input-relevantUsers"><i class="fa fa-user"></i> Relevant Users {{m}}</label>
+    <input type="text" id="node-input-relevantUsers" />
+  </div>
+  <div class="form-row" id="rowProfileKeys">
+    <label for="node-input-profileKeys"><i class="fa fa-key"></i> Profile Keys {{m}}</label>
+    <input type="text" id="node-input-profileKeys" />
+  </div>
+  <div class="form-row" id="rowExcludeHistory">
+    <label for="node-input-excludeHistory"><span data-i18n="template.label.property">Include History</span></label>
+    <input type="checkbox" id="node-input-excludeHistory" style="width:initial;" /> Yes
+  </div>
+  <div class="form-row" id="rowExcludeStepOptions">
+    <label for="node-input-excludeStepOptions"><span data-i18n="template.label.property">Include Step Options</span></label>
+    <input type="checkbox" id="node-input-excludeStepOptions" style="width:initial;" /> Yes
+  </div>
+  <div class="form-row" id="rowExcludeVisibleObjects">
+    <label for="node-input-excludeVisibleObjects"><span data-i18n="template.label.property">Include Visible Objects</span></label>
+    <input type="checkbox" id="node-input-excludeVisibleObjects" style="width:initial;" /> Yes
+  </div>
+  <div class="form-row">
+        <label for="node-input-field"><i class="fa fa-edit"></i> <span data-i18n="template.label.property">Output to</span></label>
+        <input type="text" id="node-input-field" placeholder="payload" style="width:250px;">
+        <input type="hidden" id="node-input-fieldType">
+  </div>
+  <div class="form-row">
+    <label for="node-input-failFlow"><i class="fa fa-exclamation-triangle"></i> <span data-i18n="template.label.property">Fail Flow on Error</span></label>
+    <input type="checkbox" id="node-input-failFlow" style="width:initial;" /> Yes
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Node Name" />
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="bpm">
+  <h4>Description</h4>
+  <p>A node to fetch and execute Agilit-e Business Processes based on various conditions</p>
+  <p>Fields where the label includes {{m}} are mustache-enabled fields relative to the msg object</p>
+
+  <h4>Input</h4>
+  <p>The following properties can either be specified in the UI Form of this node using Mustache or it can be manually specified, or it can be passed programmatically via <code>msg.agilite.bpm</code>:
+    <ul>
+        <li><code>msg.agilite.bpm.profileKey</code>: String</li>
+        <li><code>msg.agilite.bpm.currentUser</code>: String</li>
+        <li><code>msg.agilite.bpm.bpmRecordId</code>: String</li>
+        <li><code>msg.agilite.bpm.optionSelected</code>: String</li>
+        <li><code>msg.agilite.bpm.bpmRecordIds</code>: String</li>
+        <li><code>msg.agilite.bpm.responsibleUsers</code>: String</li>
+        <li><code>msg.agilite.bpm.stepNames</code>: String</li>
+        <li><code>msg.agilite.bpm.relevantUsers</code>: String</li>
+        <li><code>msg.agilite.bpm.profileKeys</code>: String</li>
+    </ul>
+  </p>
+
+  <h4>Output</h4>
+  <p>The output of this node will deliver either a string value, an Object or an Array to where the <code>Output To</code> field is pointing, <code>msg.payload</code> by default</p>
+  <p>Additional information about the API result can be found in the following <code>msg.agilite</code> attributes:
+    <ul>
+        <li><code>msg.agilite.success</code>: Boolean</li>
+        <li><code>msg.agilite.messages</code>: Array (List of error messages if success = false)</li>
+    </ul>
+  </p>
+</script>

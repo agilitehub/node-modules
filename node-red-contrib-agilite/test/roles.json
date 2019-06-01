@@ -1,0 +1,384 @@
+[
+    {
+        "id": "e75d1cca.d3eaf",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Roles test case flow",
+        "info": "",
+        "x": 130,
+        "y": 1780,
+        "wires": []
+    },
+    {
+        "id": "e8d90f6f.959f4",
+        "type": "roles",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "actionType": "1",
+        "roleName": "{{data.roleName}}",
+        "conditionalLevels": "",
+        "processKey": "{{data.processKey}}",
+        "bpmRecordId": "{{data.bpmRecordId}}",
+        "currentUser": "{{data.currentUser}}",
+        "responsibleUsers": "{{data.responsibleUsers}}",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 450,
+        "y": 1860,
+        "wires": [
+            [
+                "daa6fc4e.acf4a",
+                "3a1c3047.2f6f3"
+            ]
+        ]
+    },
+    {
+        "id": "2e67c76f.dd8a98",
+        "type": "link in",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "e933d85.6e7da28"
+        ],
+        "x": 55,
+        "y": 2060,
+        "wires": [
+            [
+                "48570656.6c60a8"
+            ]
+        ]
+    },
+    {
+        "id": "48570656.6c60a8",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "var data = flow.get(\"roles.data\");\n\nmsg.data = {\n    roleName: data.roleName,\n    conditionalLevels: [data.processKey, data.bpmRecordId] \n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 2060,
+        "wires": [
+            [
+                "178aae7.9bd0d52"
+            ]
+        ]
+    },
+    {
+        "id": "a139df3c.afbbd",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"Object\"){\n    node.warn(\"Response is Object\");\n}else{\n    node.error(\"Response is not a Object\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 660,
+        "y": 2040,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "69d8057f.e442dc",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 490,
+        "y": 2040,
+        "wires": [
+            [
+                "a139df3c.afbbd"
+            ]
+        ]
+    },
+    {
+        "id": "69280344.2a52cc",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "if(msg.payload.hasOwnProperty(\"roleIds\")){\n    node.warn(\"Result has property 'roleIds'\");\n}else{\n    node.error(\"Result does not have property 'roleIds'\");\n}\n\nif(msg.payload.roleIds.length === 1){\n    node.warn(\"roleIds property has length of 1\")\n}else{\n    node.error(\"roleIds property does not have length of 1\")\n}\n\nif(msg.payload.hasOwnProperty(\"responsibleUsers\")){\n    node.warn(\"Result has property 'responsibleUsers'\");\n}else{\n    node.error(\"Result does not have property 'responsibleUsers'\");\n}\n\nif(msg.payload.responsibleUsers.length === 2){\n    node.warn(\"responsibleUsers property has length of 2\")\n}else{\n    node.error(\"responsibleUsers property does not have length of 2\")\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 490,
+        "y": 2080,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "66a34191.b8c5b",
+        "type": "link in",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "c57be5b6.1d6c18"
+        ],
+        "x": 55,
+        "y": 1960,
+        "wires": [
+            [
+                "83c08ee5.a5d29"
+            ]
+        ]
+    },
+    {
+        "id": "83c08ee5.a5d29",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "var data = flow.get(\"roles.data\");\n\nmsg.data = {\n    processKey: data.processKey,\n    bpmRecordId: data.bpmRecordId,\n    roleName: data.roleName\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 1960,
+        "wires": [
+            [
+                "858c1f55.0bf9d"
+            ]
+        ]
+    },
+    {
+        "id": "643e40e0.af366",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "if(msg.payload.length === 1){\n    node.warn(\"Result array has length of 1\")\n}else{\n    node.error(\"Result array does not have length of 1\")\n}\n\nif(msg.payload[0].hasOwnProperty(\"name\")){\n    node.warn(\"Result has property 'name'\");\n}else{\n    node.error(\"Result does not have property 'name'\");\n}\n\nif(msg.payload[0].hasOwnProperty(\"users\")){\n    node.warn(\"Result has property 'users'\");\n}else{\n    node.error(\"Result does not have property 'users'\");\n}\n\nif(msg.payload[0].users.length === 2){\n    node.warn(\"users property has length of 2\");\n}else{\n    node.error(\"users property does not have length of 2\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 490,
+        "y": 1980,
+        "wires": [
+            [
+                "e933d85.6e7da28"
+            ]
+        ]
+    },
+    {
+        "id": "97d53ee0.bf30c",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 490,
+        "y": 1940,
+        "wires": [
+            [
+                "5b78ed51.cc5c14"
+            ]
+        ]
+    },
+    {
+        "id": "5b78ed51.cc5c14",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"Array\"){\n    node.warn(\"Response is Array\");\n}else{\n    node.error(\"Response is not an Array\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 660,
+        "y": 1940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e933d85.6e7da28",
+        "type": "link out",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "2e67c76f.dd8a98"
+        ],
+        "x": 595,
+        "y": 1980,
+        "wires": []
+    },
+    {
+        "id": "50368fb2.79cd2",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "msg.data = {\n    processKey: Date.now().toString(),\n    bpmRecordId: Date.now().toString(),\n    roleName: Date.now().toString(),\n    currentUser: \"roles.current@acme.com\",\n    responsibleUsers: [\"roles.resp1@acme.com\", \"roles.resp2@acme.com\"]\n}\n\nflow.set(\"roles.data\", msg.data);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 290,
+        "y": 1860,
+        "wires": [
+            [
+                "e8d90f6f.959f4"
+            ]
+        ]
+    },
+    {
+        "id": "daa6fc4e.acf4a",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "if(msg.payload.hasOwnProperty(\"hasChanged\")){\n    node.warn(\"Result has property 'hasChanged'\");\n}else{\n    node.error(\"Result does not have property 'hasChanged'\");\n}\n\nif(msg.payload.hasOwnProperty(\"id\")){\n    node.warn(\"Result has property 'id'\");\n}else{\n    node.error(\"Result does not have property 'id'\");\n}\n\nflow.set(\"roles.recordId\", msg.payload.id);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 590,
+        "y": 1880,
+        "wires": [
+            [
+                "c57be5b6.1d6c18"
+            ]
+        ]
+    },
+    {
+        "id": "3a1c3047.2f6f3",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 590,
+        "y": 1840,
+        "wires": [
+            [
+                "2596ae40.d37b82"
+            ]
+        ]
+    },
+    {
+        "id": "2596ae40.d37b82",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"Object\"){\n    node.warn(\"Response is Object\");\n}else{\n    node.error(\"Response is not an Object\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 760,
+        "y": 1840,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "c57be5b6.1d6c18",
+        "type": "link out",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "6bd30917.1092a8",
+            "e843fc68.40e1a",
+            "66a34191.b8c5b"
+        ],
+        "x": 695,
+        "y": 1880,
+        "wires": []
+    },
+    {
+        "id": "612ff96e.178118",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Get Role",
+        "info": "",
+        "x": 160,
+        "y": 2020,
+        "wires": []
+    },
+    {
+        "id": "86027bd5.4b89d8",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Get Assigned Roles",
+        "info": "",
+        "x": 190,
+        "y": 1920,
+        "wires": []
+    },
+    {
+        "id": "915cb634.a698c8",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Assign Role",
+        "info": "",
+        "x": 170,
+        "y": 1820,
+        "wires": []
+    },
+    {
+        "id": "bec30d99.38cbb",
+        "type": "inject",
+        "z": "fd67429b.e294",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 120,
+        "y": 1860,
+        "wires": [
+            [
+                "50368fb2.79cd2"
+            ]
+        ]
+    },
+    {
+        "id": "858c1f55.0bf9d",
+        "type": "roles",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "actionType": "2",
+        "roleName": "{{data.roleName}}",
+        "conditionalLevels": "",
+        "processKey": "{{data.processKey}}",
+        "bpmRecordId": "{{data.bpmRecordId}}",
+        "currentUser": "{{data.currentUser}}",
+        "responsibleUsers": "{{data.responsibleUsers}}",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 350,
+        "y": 1960,
+        "wires": [
+            [
+                "97d53ee0.bf30c",
+                "643e40e0.af366"
+            ]
+        ]
+    },
+    {
+        "id": "178aae7.9bd0d52",
+        "type": "roles",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "actionType": "3",
+        "roleName": "{{data.roleName}}",
+        "conditionalLevels": "{{data.conditionalLevels}}",
+        "processKey": "{{data.processKey}}",
+        "bpmRecordId": "{{data.bpmRecordId}}",
+        "currentUser": "{{data.currentUser}}",
+        "responsibleUsers": "{{data.responsibleUsers}}",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 350,
+        "y": 2060,
+        "wires": [
+            [
+                "69d8057f.e442dc",
+                "69280344.2a52cc"
+            ]
+        ]
+    },
+    {
+        "id": "45c15c14.758434",
+        "type": "agilite-login",
+        "z": "",
+        "serverType": "2",
+        "server": "http://localhost:6010",
+        "name": "Agilit-e Local"
+    }
+]

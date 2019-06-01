@@ -1,0 +1,230 @@
+[
+    {
+        "id": "34c2c00b.121e9",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Numbering test case flow",
+        "info": "",
+        "x": 150,
+        "y": 660,
+        "wires": []
+    },
+    {
+        "id": "56923891.3f18a8",
+        "type": "inject",
+        "z": "fd67429b.e294",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 120,
+        "y": 700,
+        "wires": [
+            [
+                "5b03390e.789348"
+            ]
+        ]
+    },
+    {
+        "id": "8c0579ea.1aa298",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Execute 1",
+        "info": "",
+        "x": 160,
+        "y": 780,
+        "wires": []
+    },
+    {
+        "id": "5b03390e.789348",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "var key = null;\n\n// Set Key\nflow.set(\"numbering.key\", \"node-red-testing\");\nkey = flow.get(\"numbering.key\");\n\n// Test if key is null\nif(key !== null){\n    node.warn(\"key is not equal to null\");\n}else{\n    node.error(\"key is equal to null\");\n}\n\nmsg.key = key;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 740,
+        "wires": [
+            [
+                "5121f7c6.97c008"
+            ]
+        ]
+    },
+    {
+        "id": "5121f7c6.97c008",
+        "type": "numbering",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "profileKey": "{{key}}",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 170,
+        "y": 820,
+        "wires": [
+            [
+                "9d8f197f.9e03d8",
+                "d24619e7.e0cba8"
+            ]
+        ]
+    },
+    {
+        "id": "9d8f197f.9e03d8",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 330,
+        "y": 800,
+        "wires": [
+            [
+                "be4f1311.a42c2"
+            ]
+        ]
+    },
+    {
+        "id": "be4f1311.a42c2",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"string\"){\n    node.warn(\"Response is a String\");\n}else{\n    node.error(\"Response is not a String\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 800,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "d24619e7.e0cba8",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "if(msg.payload === \"PRE-00010-SUF\"){\n    node.warn(\"Result is Correct\");\n}else{\n    node.error(\"Result is Incorrect\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 330,
+        "y": 840,
+        "wires": [
+            [
+                "f74e1cbf.54ac1"
+            ]
+        ]
+    },
+    {
+        "id": "2b5767cd.4a4cd8",
+        "type": "numbering",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "profileKey": "{{key}}",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 170,
+        "y": 920,
+        "wires": [
+            [
+                "f6e5fcce.65bfb",
+                "30e77f0b.95ecd"
+            ]
+        ]
+    },
+    {
+        "id": "f6e5fcce.65bfb",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 330,
+        "y": 900,
+        "wires": [
+            [
+                "4361b33e.632bfc"
+            ]
+        ]
+    },
+    {
+        "id": "4361b33e.632bfc",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"string\"){\n    node.warn(\"Response is a String\");\n}else{\n    node.error(\"Response is not a String\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 900,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "30e77f0b.95ecd",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "if(msg.payload === \"PRE-00011-SUF\"){\n    node.warn(\"Result is Correct\");\n}else{\n    node.error(\"Result is Incorrect\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 330,
+        "y": 940,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "6b6296b1.960eb8",
+        "type": "link in",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "f74e1cbf.54ac1"
+        ],
+        "x": 55,
+        "y": 920,
+        "wires": [
+            [
+                "2b5767cd.4a4cd8"
+            ]
+        ]
+    },
+    {
+        "id": "f74e1cbf.54ac1",
+        "type": "link out",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "6b6296b1.960eb8"
+        ],
+        "x": 435,
+        "y": 840,
+        "wires": []
+    },
+    {
+        "id": "5d61b29b.f451fc",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Execute 2",
+        "info": "",
+        "x": 160,
+        "y": 880,
+        "wires": []
+    },
+    {
+        "id": "45c15c14.758434",
+        "type": "agilite-login",
+        "z": "",
+        "serverType": "2",
+        "server": "http://localhost:6010",
+        "name": "Agilit-e Local"
+    }
+]

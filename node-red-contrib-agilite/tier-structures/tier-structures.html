@@ -1,0 +1,180 @@
+<script type="text/javascript">
+  var agiliteTierStructuresFunctions = {
+    updateActionType:function(){
+        var value = $("#node-input-actionType option:selected").val();
+
+        switch(value){
+          case "1"://getTierByKey
+            document.querySelector("#rowTierKeys").style.display = "block";
+            document.querySelector("#rowIncludeValues").style.display = "block";
+            document.querySelector("#rowIncludeMetaData").style.display = "block";
+            document.querySelector("#rowIncludeTierEntries").style.display = "block";
+            document.querySelector("#rowSortValues").style.display = "block";
+            document.querySelector("#rowValuesOutputFormat").style.display = "block";
+            break;
+          default:
+            document.querySelector("#rowTierKeys").style.display = "none";
+            document.querySelector("#rowIncludeValues").style.display = "none";
+            document.querySelector("#rowIncludeMetaData").style.display = "none";
+            document.querySelector("#rowIncludeTierEntries").style.display = "none";
+            document.querySelector("#rowSortValues").style.display = "none";
+            document.querySelector("#rowValuesOutputFormat").style.display = "none";
+            break;
+        }
+    }
+  }
+
+  RED.nodes.registerType('tier-structures',{
+    category: "agilite",
+    inputs: 1,
+    outputs:1,
+    icon: "tier-structures.png",
+    color: "#ffa4a2",
+    label: function() {
+        return this.name || "Tier Structures";
+    },
+    paletteLabel : "tier structures",
+    defaults : {
+      server: {
+        value : "",
+        required: true,
+        type: "agilite-login"
+      },
+      actionType: {
+        value : "1",
+        required : true
+      },
+      tierKeys: {
+        value : "",
+        required: true
+      },
+      includeValues: {
+        value: true
+      },
+      includeMetaData: {
+        value: false
+      },
+      includeTierEntries: {
+        value: false
+      },
+      sortValues: {
+        value:""
+      },
+      valuesOutputFormat: {
+        value: "array"
+      },
+      name: {
+        value:""
+      },
+      field: {
+        value: "payload",
+      },
+      fieldType: {
+        value: "msg"
+      },
+      failFlow: {
+        value: true
+      }
+    },
+    oneditprepare: function(){
+      $("#node-input-actionType").change(function(){agiliteTierStructuresFunctions.updateActionType()});
+      agiliteTierStructuresFunctions.updateActionType();
+
+      if (!this.fieldType)
+        this.fieldType = 'msg';
+
+      $("#node-input-field").typedInput({
+          default: 'msg',
+          types: ['msg','flow','global'],
+          typeField: $("#node-input-fieldType")
+      });
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="tier-structures">
+  <div class="form-row">
+    <label for="node-input-server"><i class="fa fa-server"></i> Server</label>
+    <input type="text" id="node-input-server" placeholder="Server"></input>
+  </div>
+  <div class="form-row" id="rowActionType">
+      <label for="node-input-actionType"><i class="fa fa-arrow-circle-right"></i> Action Type</label>
+      <select id="node-input-actionType" style="width:auto;">
+        <option value="1">Get Tier By Key</option>
+      </select>
+  </div>
+  <div class="form-row" id="rowTierKeys">
+    <label for="node-input-tierKeys"><i class="fa fa-key"></i> Tier Keys {{m}}</label>
+    <input type="text" id="node-input-tierKeys" />
+  </div>
+  <div class="form-row" id="rowSortValues">
+    <label for="node-input-sortValues">Sort Values {{m}}</label>
+    <select id="node-input-sortValues" style="width:auto;">
+      <option value="">-Select-</option>
+      <option value="asc">Ascending by Label</option>
+      <option value="desc">Descending by Label</option>
+      <option value="asc_value">Ascending by Value</option>
+      <option value="desc_value">Descending by Value</option>
+    </select>
+  </div>
+  <div class="form-row" id="rowValuesOutputFormat">
+    <label for="node-input-valuesOutputFormat">Values Output Format {{m}}</label>
+    <select id="node-input-valuesOutputFormat" style="width:auto;">
+      <option value="array">Array</option>
+      <option value="json">JSON</option>
+      <option value="string">String</option>
+    </select>
+  </div>
+  <div class="form-row" id="rowIncludeValues">
+    <label for="node-input-includeValues"><span data-i18n="template.label.property">Include Values</span></label>
+    <input type="checkbox" id="node-input-includeValues" style="width:initial;" /> Yes
+  </div>
+  <div class="form-row" id="rowIncludeMetaData">
+    <label for="node-input-includeMetaData"><span data-i18n="template.label.property">Include Meta Data</span></label>
+    <input type="checkbox" id="node-input-includeMetaData" style="width:initial;" /> Yes
+  </div>
+  <div class="form-row" id="rowIncludeTierEntries">
+    <label for="node-input-includeTierEntries"><span data-i18n="template.label.property">Include Tier Entries</span></label>
+    <input type="checkbox" id="node-input-includeTierEntries" style="width:initial;" /> Yes
+  </div>
+  <div class="form-row">
+        <label for="node-input-field"><i class="fa fa-edit"></i> <span data-i18n="template.label.property">Output to</span></label>
+        <input type="text" id="node-input-field" placeholder="payload" style="width:250px;">
+        <input type="hidden" id="node-input-fieldType">
+  </div>
+  <div class="form-row">
+    <label for="node-input-failFlow"><i class="fa fa-exclamation-triangle"></i> <span data-i18n="template.label.property">Fail Flow on Error</span></label>
+    <input type="checkbox" id="node-input-failFlow" style="width:initial;" /> Yes
+  </div>
+  <div class="form-row">
+    <label for="node-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-input-name" placeholder="Node Name" />
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="tier-structures">
+  <h4>Description</h4>
+  <p>A node to fetch Agilit-e Tier Structures based on various conditions</p>
+  <p>Fields where the label includes {{m}} are mustache-enabled fields relative to the msg object</p>
+
+  <h4>Input</h4>
+  <p>The following properties can either be specified in the UI Form of this node using Mustache or it can be manually specified, or it can be passed programmatically via <code>msg.agilite.tierstructures</code>:
+    <ul>
+        <li><code>msg.agilite.tierstructures.tierKeys</code>: String</li>
+        <li><code>msg.agilite.tierstructures.sortValues</code>: String</li>
+        <li><code>msg.agilite.tierstructures.valuesOutputFormat</code>: String</li>
+        <li><code>msg.agilite.tierstructures.includeValues</code>: String</li>
+        <li><code>msg.agilite.tierstructures.includeMetaData</code>: String</li>
+        <li><code>msg.agilite.tierstructures.includeTierEntries</code>: String</li>
+    </ul>
+  </p>
+
+  <h4>Output</h4>
+  <p>The output of this node will deliver either a string value, an Object or an Array to where the <code>Output To</code> field is pointing, <code>msg.payload</code> by default</p>
+  <p>Additional information about the API result can be found in the following <code>msg.agilite</code> attributes:
+    <ul>
+        <li><code>msg.agilite.success</code>: Boolean</li>
+        <li><code>msg.agilite.messages</code>: Array (List of error messages if success = false)</li>
+    </ul>
+  </p>
+</script>

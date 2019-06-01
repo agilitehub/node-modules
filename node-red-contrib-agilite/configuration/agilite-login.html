@@ -1,0 +1,160 @@
+<script type="text/javascript">
+  var agiliteGlobals = {
+    defaultServer:"https://api.agilite.io",
+    hasApiKey:false
+  };
+
+  var agiliteFunctions = {
+    loadForm:function(){
+      if(agiliteGlobals.hasApiKey){
+        agiliteFunctions.loadAuthenticatedForm();
+      }else{
+        agiliteFunctions.loadNewForm();
+      }
+    },
+    loadServerType:function(){
+      var serverType = document.querySelector("#node-config-input-serverType").value;
+
+      if(serverType === "1"){
+        document.querySelector("#rowServer").style.display = "none";
+        document.querySelector("#node-config-input-server").value = agiliteGlobals.defaultServer;
+      }else{
+        document.querySelector("#rowServer").style.display = "block";
+      }
+    },
+    resetAuthentication:function(){
+      agiliteGlobals.hasApiKey = false;
+      document.querySelector("#node-config-input-apiKey").value = "";
+      document.querySelector("#node-config-input-apiKey").disabled = false;
+      agiliteFunctions.loadForm();
+    },
+    authenticate:function(){
+      var apiKey = document.querySelector("#node-config-input-apiKey").value;
+      var url = document.querySelector("#node-config-input-server").value;
+
+      if(apiKey === ""){
+        alert("Please provide an Agilit-e API Key before authenticating");
+        return false;
+      }
+
+      if(url === ""){
+        alert("Please provide a URL for your Agilit-e API Server");
+        return false;
+      }
+
+      url = url + "/user/authenticatetoken";
+
+      $.ajax({
+        type: "GET",
+        url: url,
+        beforeSend: function(xhr){xhr.setRequestHeader('api-key', apiKey);},
+        success: function(result){
+          agiliteGlobals.hasApiKey = true;
+          agiliteFunctions.loadForm();
+        },
+        error: function(XMLHttpRequest, textStatus, errorThrown) {
+           alert(errorThrown);
+        }
+      });
+    },
+    loadNewForm:function(){
+      var serverType = $("#node-config-input-serverType option:selected").val();
+
+      document.querySelector("#rowReset").style.display = "none";
+      document.querySelector("#rowAuthenticate").style.display = "block";
+
+      if(serverType === "1"){
+        document.querySelector("#rowServer").style.display = "none";
+      }else{
+        document.querySelector("#rowServer").style.display = "block";
+      }
+
+      document.querySelector("#node-config-input-serverType").disabled = false;
+      document.querySelector("#node-config-input-server").disabled = false;
+    },
+    loadAuthenticatedForm:function(){
+      var serverType = $("#node-config-input-serverType option:selected").val();
+
+      document.querySelector("#rowReset").style.display = "block";
+      document.querySelector("#rowAuthenticate").style.display = "none";
+
+      if(serverType === "1"){
+        document.querySelector("#rowServer").style.display = "none";
+      }else{
+        document.querySelector("#rowServer").style.display = "block";
+      } 
+    
+      document.querySelector("#node-config-input-serverType").disabled = true;
+      document.querySelector("#node-config-input-apiKey").disabled = true;
+    }
+  };
+
+  RED.nodes.registerType('agilite-login',{
+    category: 'config',
+    icon: "agilite-login.png",
+    color: "#ffa4a2",
+    defaults : {
+      serverType: {
+          value: "1",
+          required: true
+      },      
+      server: {
+        value : agiliteGlobals.defaultServer,
+        required: true
+      },
+      name: {
+        value:""
+      }     
+    },
+    credentials: {
+         apiKey: {type:"password"}
+    },
+    label: function () {
+      var name = this.serverType === "1" ? "Cloud" : "Custom";
+      return name + ' (' + this.name + ')';
+    },
+    oneditprepare: function(){
+      agiliteGlobals.hasApiKey = this.credentials.has_apiKey;
+
+      $("#node-config-input-serverType").change(function(){agiliteFunctions.loadServerType()});
+      $("#btnReset").click(function(){agiliteFunctions.resetAuthentication()});
+      $("#btnAuthenticate").click(function(){agiliteFunctions.authenticate()});
+
+      agiliteFunctions.loadForm();
+    }
+  });
+</script>
+
+<script type="text/x-red" data-template-name="agilite-login">
+  <div class="form-row">
+    <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
+    <input type="text" id="node-config-input-name" placeholder="Node Name" />
+  </div>
+  <div class="form-row" id="rowServerType">
+    <label for="node-config-input-serverType"><i class="fa fa-arrow-circle-right"></i> Server Type</label>
+    <select id="node-config-input-serverType">
+      <option value="1">Agilit-e Cloud</option>
+      <option value="2">Agilit-e Custom</option>
+    </select>
+  </div>  
+  <div class="form-row" id="rowServer">
+    <label for="node-config-input-server"><i class="fa fa-server"></i> Server</label>
+    <input type="text" id="node-config-input-server" placeholder="Server" />
+  </div>
+  <div class="form-row" id="rowApiKey">
+    <label for="node-config-input-apiKey"><i class="fa fa-key"></i> Api Key</label>
+    <input type="password" id="node-config-input-apiKey" placeholder="Api Key" />
+  </div>
+  <div class="form-row" id="rowAuthenticate" style="text-align:center">
+    <button id="btnAuthenticate" type="button" class="btn btn-primary">Authenticate</button>
+  </div>
+  <div class="form-row" id="rowReset" style="text-align:center">
+    <p>Authenticated with Agilit-e</p>
+    <button id="btnReset" type="button" class="btn btn-danger">Reset</button>
+  </div>
+</script>
+
+<script type="text/x-red" data-help-name="agilite-login">
+   <p>Authenticate with Agilit-e API Server</p>
+   <p>A configuration node to authenticate with your Agilit-e API Server</p>
+</script>

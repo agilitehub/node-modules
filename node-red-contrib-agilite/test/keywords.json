@@ -1,0 +1,778 @@
+[
+    {
+        "id": "4e4642e0.a4ea5c",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Keywords test case flow",
+        "info": "",
+        "x": 150,
+        "y": 20,
+        "wires": []
+    },
+    {
+        "id": "92433d95.c5282",
+        "type": "inject",
+        "z": "fd67429b.e294",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 120,
+        "y": 100,
+        "wires": [
+            [
+                "9ec8c6a6.400508"
+            ]
+        ]
+    },
+    {
+        "id": "8e1f1086.535c5",
+        "type": "keywords",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "actionType": "5",
+        "recordId": "",
+        "profileKey": "",
+        "groupName": "",
+        "labelKey": "",
+        "valueKey": "",
+        "sortBy": "",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 460,
+        "y": 100,
+        "wires": [
+            [
+                "cee1118a.947a4"
+            ]
+        ]
+    },
+    {
+        "id": "9ec8c6a6.400508",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "msg.payload = {\n    data: {\n        key: Date.now(),\n        values: [ { \"label\": \"key1\", \"value\": \"value1\" } ]\n    }\n};\n\nflow.set(\"keywords.new\", msg.payload);\n\nflow.set(\"keywords.modified\", {\n    data: {\n        key: \"\",\n        groupName: \"\",\n        values: [ { \"label\": \"key11\", \"value\": \"value11\" } ]\n    }\n});\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 290,
+        "y": 100,
+        "wires": [
+            [
+                "8e1f1086.535c5"
+            ]
+        ]
+    },
+    {
+        "id": "dc746b71.319608",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "var newData = flow.get(\"keywords.new\");\nvar data = flow.get(\"keywords.data\");\n\nif(msg.payload === \"Object\"){\n    node.warn(\"Response is Object\");\n}else{\n    node.error(\"Response is not a Object\");\n}\n\nif(data.data.hasOwnProperty(\"groupName\")){\n    node.warn(\"groupName property exists\");\n}else{\n    node.error(\"groupName property does not exist\");\n}\n\nif(data.data.groupName === \"\"){\n    node.warn(\"groupName property is empty string\");\n}else{\n    node.error(\"groupName property is not empty string\");\n}\n\nif(JSON.stringify(data.data.values) === JSON.stringify(newData.data.values)){\n    node.warn(\"Result values match Initial values\");\n}else{\n    node.error(\"Result values do not match Initial values\");\n}\n\n//Store recordId for later use\nflow.set(\"keywords.recordId\", data._id);\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 1010,
+        "y": 100,
+        "wires": [
+            [
+                "c1bb5b2d.78cbb8"
+            ]
+        ]
+    },
+    {
+        "id": "8589cee1.da0c4",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 850,
+        "y": 100,
+        "wires": [
+            [
+                "dc746b71.319608"
+            ]
+        ]
+    },
+    {
+        "id": "cee1118a.947a4",
+        "type": "change",
+        "z": "fd67429b.e294",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "keywords.data",
+                "pt": "flow",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 650,
+        "y": 100,
+        "wires": [
+            [
+                "8589cee1.da0c4"
+            ]
+        ]
+    },
+    {
+        "id": "c1bb5b2d.78cbb8",
+        "type": "link out",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "1766303b.b70ec"
+        ],
+        "x": 1120,
+        "y": 100,
+        "wires": []
+    },
+    {
+        "id": "1766303b.b70ec",
+        "type": "link in",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "c1bb5b2d.78cbb8"
+        ],
+        "x": 55,
+        "y": 160,
+        "wires": [
+            [
+                "eb454532.885598"
+            ]
+        ]
+    },
+    {
+        "id": "eb454532.885598",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "msg.recordId = flow.get(\"keywords.recordId\");\n\nvar mainEntry = {};\nvar key = Date.now();\nvar groupName = Date.now();\n\nif(msg.recordId !== null){\n    node.warn(\"recordId not null\");\n}else{\n    node.error(\"recordId is null\");\n}\n\nmainEntry = flow.get(\"keywords.modified\");\nmainEntry.data.key = key.toString();\nmainEntry.data.groupName = groupName.toString();\n\nflow.set(\"keywords.modified\", mainEntry);\nmsg.payload = mainEntry;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 180,
+        "wires": [
+            [
+                "43986e8a.1a17"
+            ]
+        ]
+    },
+    {
+        "id": "43986e8a.1a17",
+        "type": "keywords",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "actionType": "6",
+        "recordId": "{{recordId}}",
+        "profileKey": "",
+        "groupName": "",
+        "labelKey": "",
+        "valueKey": "",
+        "sortBy": "",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 360,
+        "y": 180,
+        "wires": [
+            [
+                "9b27f30f.aaba",
+                "701c656e.d7164c"
+            ]
+        ]
+    },
+    {
+        "id": "8fb696d4.050258",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"Object\"){\n    node.warn(\"Response is Object\");\n}else{\n    node.error(\"Response is not a Object\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 680,
+        "y": 160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "9b27f30f.aaba",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 510,
+        "y": 160,
+        "wires": [
+            [
+                "8fb696d4.050258"
+            ]
+        ]
+    },
+    {
+        "id": "701c656e.d7164c",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "var modifiedData = flow.get(\"keywords.modified\");\n\nif(msg.payload.data.hasOwnProperty(\"groupName\")){\n    node.warn(\"groupName property exists\");\n}else{\n    node.error(\"groupName property does not exist\");\n}\n\nif(msg.payload.data.groupName === modifiedData.data.groupName){\n    node.warn(\"Result groupName matches Initial groupName\");\n}else{\n    node.error(\"Result groupName does not match Initial groupName\")\n}\n\nif(JSON.stringify(msg.payload.data.values) === JSON.stringify(modifiedData.data.values)){\n    node.warn(\"Result values match Initial values\");\n}else{\n    node.error(\"Result values do not match Inital values\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 670,
+        "y": 200,
+        "wires": [
+            [
+                "309fa3d2.786d0c"
+            ]
+        ]
+    },
+    {
+        "id": "309fa3d2.786d0c",
+        "type": "link out",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "a9d6a4af.d985b8"
+        ],
+        "x": 775,
+        "y": 200,
+        "wires": []
+    },
+    {
+        "id": "a9d6a4af.d985b8",
+        "type": "link in",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "309fa3d2.786d0c"
+        ],
+        "x": 55,
+        "y": 260,
+        "wires": [
+            [
+                "ac014260.ed9e7"
+            ]
+        ]
+    },
+    {
+        "id": "a2d7f98b.7099a8",
+        "type": "keywords",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "actionType": "1",
+        "recordId": "",
+        "profileKey": "{{key}}",
+        "groupName": "",
+        "labelKey": "",
+        "valueKey": "",
+        "sortBy": "",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 360,
+        "y": 260,
+        "wires": [
+            [
+                "87bfb8ab.563db8",
+                "99100d94.dd843"
+            ]
+        ]
+    },
+    {
+        "id": "ac014260.ed9e7",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "var mainEntry = flow.get(\"keywords.modified\");\nvar key = mainEntry.data.key;\n\nif(key !== null){\n    node.warn(\"key not equal to null\")\n}else{\n    node.error(\"key is equal to null\")\n}\n\nmsg.key = key;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 260,
+        "wires": [
+            [
+                "a2d7f98b.7099a8"
+            ]
+        ]
+    },
+    {
+        "id": "87bfb8ab.563db8",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "var mainEntry = flow.get(\"keywords.modified\");\n\nif(msg.payload.length > 0){\n    node.warn(\"Result is greater than 0\");\n}else{\n    node.error(\"Result is not greater than 0\");\n}\n\nif(JSON.stringify(msg.payload) === JSON.stringify(mainEntry.data.values)){\n    node.warn(\"Result matches Initial values\");\n}else{\n    node.error(\"Result does not match Initial values\");\n}\n\n//Get first entry and check if there is a label and value property\nvar tmpEntry = msg.payload[0];\n\nif(tmpEntry.hasOwnProperty(\"label\")){\n    node.warn(\"Result has property of 'label\")\n}else{\n    node.error(\"Result does not have property of 'label\")\n}\n\nif(tmpEntry.hasOwnProperty(\"value\")){\n    node.warn(\"Result has property of 'value\")\n}else{\n    node.error(\"Result does not have property of 'value\")\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 510,
+        "y": 280,
+        "wires": [
+            [
+                "4d45586f.ded5e8"
+            ]
+        ]
+    },
+    {
+        "id": "99100d94.dd843",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 510,
+        "y": 240,
+        "wires": [
+            [
+                "b219f100.fefc9"
+            ]
+        ]
+    },
+    {
+        "id": "b219f100.fefc9",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"Array\"){\n    node.warn(\"Response is Array\");\n}else{\n    node.error(\"Response is not an Array\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 680,
+        "y": 240,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "4d45586f.ded5e8",
+        "type": "link out",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "369338d9.da9ec8"
+        ],
+        "x": 655,
+        "y": 280,
+        "wires": []
+    },
+    {
+        "id": "369338d9.da9ec8",
+        "type": "link in",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "4d45586f.ded5e8"
+        ],
+        "x": 55,
+        "y": 360,
+        "wires": [
+            [
+                "6a94df05.d17f4"
+            ]
+        ]
+    },
+    {
+        "id": "6a94df05.d17f4",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "var mainEntry = flow.get(\"keywords.modified\");\nvar groupName = mainEntry.data.groupName;\n\nif(groupName !== null){\n    node.warn(\"groupName not equal to null\")\n}else{\n    node.error(\"groupName is equal to null\")\n}\n\nmsg.groupName = groupName;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 360,
+        "wires": [
+            [
+                "7a8ec442.4ffd1c"
+            ]
+        ]
+    },
+    {
+        "id": "7a8ec442.4ffd1c",
+        "type": "keywords",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "actionType": "2",
+        "recordId": "",
+        "profileKey": "{{key}}",
+        "groupName": "{{groupName}}",
+        "labelKey": "",
+        "valueKey": "",
+        "sortBy": "",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 360,
+        "y": 360,
+        "wires": [
+            [
+                "30f85c44.1eceb4",
+                "b64d46b5.d71688"
+            ]
+        ]
+    },
+    {
+        "id": "b64d46b5.d71688",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "var mainEntry = flow.get(\"keywords.modified\");\n\nif(msg.payload.length > 0){\n    node.warn(\"Result is greater than 0\");\n}else{\n    node.error(\"Result is not greater than 0\");\n}\n\nif(JSON.stringify(msg.payload[0]) === JSON.stringify(mainEntry.data.key)){\n    node.warn(\"Result matches Initial values\");\n}else{\n    node.error(\"Result does not match Initial values\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 510,
+        "y": 380,
+        "wires": [
+            [
+                "7d6bfbc9.cc1a34"
+            ]
+        ]
+    },
+    {
+        "id": "30f85c44.1eceb4",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 510,
+        "y": 340,
+        "wires": [
+            [
+                "a937285f.5bacc8"
+            ]
+        ]
+    },
+    {
+        "id": "a937285f.5bacc8",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"Array\"){\n    node.warn(\"Response is Array\");\n}else{\n    node.error(\"Response is not an Array\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 680,
+        "y": 340,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "7d6bfbc9.cc1a34",
+        "type": "link out",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "b8083daa.9ced"
+        ],
+        "x": 655,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "b8083daa.9ced",
+        "type": "link in",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "7d6bfbc9.cc1a34"
+        ],
+        "x": 55,
+        "y": 460,
+        "wires": [
+            [
+                "9851dd72.da67"
+            ]
+        ]
+    },
+    {
+        "id": "9851dd72.da67",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "var mainEntry = flow.get(\"keywords.modified\");\nvar value = mainEntry.data.values[0].value;\n\nmsg.value = value;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 460,
+        "wires": [
+            [
+                "af94d91f.eabeb8"
+            ]
+        ]
+    },
+    {
+        "id": "af94d91f.eabeb8",
+        "type": "keywords",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "actionType": "4",
+        "recordId": "",
+        "profileKey": "{{key}}",
+        "groupName": "{{value}}",
+        "labelKey": "",
+        "valueKey": "{{value}}",
+        "sortBy": "",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 360,
+        "y": 460,
+        "wires": [
+            [
+                "efd4fcf5.b799f",
+                "3a93d81b.72fb98"
+            ]
+        ]
+    },
+    {
+        "id": "3a93d81b.72fb98",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "var mainEntry = flow.get(\"keywords.modified\");\n\nif(JSON.stringify(msg.payload) === JSON.stringify(mainEntry.data.values[0].label)){\n    node.warn(\"Result matches Initial values\");\n}else{\n    node.error(\"Result does not match Initial values\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 510,
+        "y": 480,
+        "wires": [
+            [
+                "f81f1ed5.d86ef"
+            ]
+        ]
+    },
+    {
+        "id": "efd4fcf5.b799f",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 510,
+        "y": 440,
+        "wires": [
+            [
+                "ab72fcfc.bff21"
+            ]
+        ]
+    },
+    {
+        "id": "ab72fcfc.bff21",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"string\"){\n    node.warn(\"Response is a String\");\n}else{\n    node.error(\"Response is not a String\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 680,
+        "y": 440,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "f81f1ed5.d86ef",
+        "type": "link out",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "992160f.a283fa"
+        ],
+        "x": 655,
+        "y": 480,
+        "wires": []
+    },
+    {
+        "id": "e5777608.d551d8",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Update",
+        "info": "",
+        "x": 150,
+        "y": 140,
+        "wires": []
+    },
+    {
+        "id": "a9b5ae3f.781aa",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Create",
+        "info": "",
+        "x": 150,
+        "y": 60,
+        "wires": []
+    },
+    {
+        "id": "7eb0fea5.0bcef",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Get By Profile Key",
+        "info": "",
+        "x": 190,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "44ddab7b.4ddf14",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Get By Group Name",
+        "info": "",
+        "x": 190,
+        "y": 320,
+        "wires": []
+    },
+    {
+        "id": "1735a60a.0f937a",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Get Label By Value",
+        "info": "",
+        "x": 190,
+        "y": 420,
+        "wires": []
+    },
+    {
+        "id": "992160f.a283fa",
+        "type": "link in",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [
+            "f81f1ed5.d86ef"
+        ],
+        "x": 55,
+        "y": 560,
+        "wires": [
+            [
+                "a0e93efd.b8ee2"
+            ]
+        ]
+    },
+    {
+        "id": "a0e93efd.b8ee2",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "var mainEntry = flow.get(\"keywords.modified\");\nvar label = mainEntry.data.values[0].label;\n\nmsg.label = label;\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 560,
+        "wires": [
+            [
+                "3ddbbcf6.aac664"
+            ]
+        ]
+    },
+    {
+        "id": "3ddbbcf6.aac664",
+        "type": "keywords",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "actionType": "3",
+        "recordId": "",
+        "profileKey": "{{key}}",
+        "groupName": "{{value}}",
+        "labelKey": "{{label}}",
+        "valueKey": "{{value}}",
+        "sortBy": "",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 360,
+        "y": 560,
+        "wires": [
+            [
+                "d950d4fc.a46a48",
+                "9ab5e60f.739f38"
+            ]
+        ]
+    },
+    {
+        "id": "9ab5e60f.739f38",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "var mainEntry = flow.get(\"keywords.modified\");\n\nif(JSON.stringify(msg.payload) === JSON.stringify(mainEntry.data.values[0].value)){\n    node.warn(\"Result matches Initial values\");\n}else{\n    node.error(\"Result does not match Initial values\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 510,
+        "y": 580,
+        "wires": [
+            [
+                "2ccc8c2a.b1a2e4"
+            ]
+        ]
+    },
+    {
+        "id": "d950d4fc.a46a48",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 510,
+        "y": 540,
+        "wires": [
+            [
+                "e1737345.4b4d7"
+            ]
+        ]
+    },
+    {
+        "id": "e1737345.4b4d7",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"string\"){\n    node.warn(\"Response is a String\");\n}else{\n    node.error(\"Response is not a String\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 680,
+        "y": 540,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "2ccc8c2a.b1a2e4",
+        "type": "link out",
+        "z": "fd67429b.e294",
+        "name": "",
+        "links": [],
+        "x": 655,
+        "y": 580,
+        "wires": []
+    },
+    {
+        "id": "3748b1f6.b707de",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Get Value By Label",
+        "info": "",
+        "x": 190,
+        "y": 520,
+        "wires": []
+    },
+    {
+        "id": "45c15c14.758434",
+        "type": "agilite-login",
+        "z": "",
+        "serverType": "2",
+        "server": "http://localhost:6010",
+        "name": "Agilit-e Local"
+    }
+]

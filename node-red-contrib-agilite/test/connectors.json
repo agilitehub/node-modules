@@ -1,0 +1,129 @@
+[
+    {
+        "id": "90e45606.921b38",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Connectors test case flow",
+        "info": "",
+        "x": 150,
+        "y": 1020,
+        "wires": []
+    },
+    {
+        "id": "2c81afd5.e4af3",
+        "type": "inject",
+        "z": "fd67429b.e294",
+        "name": "",
+        "topic": "",
+        "payload": "",
+        "payloadType": "date",
+        "repeat": "",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "x": 120,
+        "y": 1060,
+        "wires": [
+            [
+                "37252060.3bacc"
+            ]
+        ]
+    },
+    {
+        "id": "281fb9c1.851666",
+        "type": "comment",
+        "z": "fd67429b.e294",
+        "name": "Execute",
+        "info": "",
+        "x": 160,
+        "y": 1140,
+        "wires": []
+    },
+    {
+        "id": "37252060.3bacc",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Prep Data Object",
+        "func": "var key = null;\n\n// Set Key\nflow.set(\"connectors.key\", \"node-red-testing\");\nflow.set(\"connectors.route\", \"ping\");\nkey = flow.get(\"connectors.key\");\nroute = flow.get(\"connectors.route\");\n\n// Test if key is null\nif(key !== null){\n    node.warn(\"key is not equal to null\");\n}else{\n    node.error(\"key is equal to null\");\n}\n\nmsg.key = key;\nmsg.route = route;\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 190,
+        "y": 1100,
+        "wires": [
+            [
+                "e5c7f1e3.ad3b8"
+            ]
+        ]
+    },
+    {
+        "id": "253a0ab5.84fee6",
+        "type": "type-detect",
+        "z": "fd67429b.e294",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "x": 330,
+        "y": 1160,
+        "wires": [
+            [
+                "55e0a271.cb4ddc"
+            ]
+        ]
+    },
+    {
+        "id": "55e0a271.cb4ddc",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result Type",
+        "func": "if(msg.payload === \"string\"){\n    node.warn(\"Response is a String\");\n}else{\n    node.error(\"Response is not a String\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 500,
+        "y": 1160,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "233620a8.b62a1",
+        "type": "function",
+        "z": "fd67429b.e294",
+        "name": "Test Result",
+        "func": "if(msg.payload === \"Greetings from Agilit-e\"){\n    node.warn(\"Result is Correct\");\n}else{\n    node.error(\"Result is Incorrect\");\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "x": 330,
+        "y": 1200,
+        "wires": [
+            []
+        ]
+    },
+    {
+        "id": "e5c7f1e3.ad3b8",
+        "type": "connectors",
+        "z": "fd67429b.e294",
+        "server": "45c15c14.758434",
+        "profileKey": "{{key}}",
+        "routeKey": "{{route}}",
+        "name": "",
+        "field": "payload",
+        "fieldType": "msg",
+        "failFlow": true,
+        "x": 160,
+        "y": 1180,
+        "wires": [
+            [
+                "253a0ab5.84fee6",
+                "233620a8.b62a1"
+            ]
+        ]
+    },
+    {
+        "id": "45c15c14.758434",
+        "type": "agilite-login",
+        "z": "",
+        "serverType": "2",
+        "server": "http://localhost:6010",
+        "name": "Agilit-e Local"
+    }
+]
